@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "頃合商店 Public API",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "開発中の草案。まだ利用開始していません。金額は税込の日本円、数量は1パッケージ単位。qとjanの同時指定・重複パラメーター・未定義の入力は拒否します。"
   },
   "servers": [
@@ -429,7 +429,7 @@
       },
       "get": {
         "operationId": "list_orders",
-        "summary": "このキーが作成した注文の一覧",
+        "summary": "認可されたホーム内で同じmodeの注文を一覧",
         "responses": {
           "200": {
             "description": "成功",
@@ -511,7 +511,7 @@
     "/v1/orders/{id}": {
       "get": {
         "operationId": "get_order",
-        "summary": "このキーが作成した注文の状況照会",
+        "summary": "認可されたホーム内で同じmodeの注文の状況照会",
         "responses": {
           "200": {
             "description": "成功",
@@ -733,7 +733,7 @@
       },
       "get": {
         "operationId": "list_product_requests",
-        "summary": "このキーの取り扱いリクエスト一覧",
+        "summary": "認可されたホーム内で同じmodeの取り扱いリクエスト一覧",
         "responses": {
           "200": {
             "description": "成功",
@@ -815,7 +815,7 @@
     "/v1/product-requests/{id}": {
       "get": {
         "operationId": "get_product_request",
-        "summary": "取り扱いリクエストの調査・受付状況照会",
+        "summary": "認可されたホーム内で同じmodeの調査・受付状況照会",
         "responses": {
           "200": {
             "description": "成功",
