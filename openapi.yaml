@@ -2,12 +2,12 @@
   "openapi": "3.1.0",
   "info": {
     "title": "頃合商店 Public API",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "license": {
       "name": "MIT",
       "identifier": "MIT"
     },
-    "description": "開発中の草案。まだ利用開始していません。金額は税込の日本円、数量は1パッケージ単位。商品検索はqを必須とし、重複パラメーター・未定義の入力は拒否します。"
+    "description": "開発中の草案。まだ利用開始していません。金額は税込の日本円、数量は1パッケージ単位。商品検索はqを必須とし、重複パラメーター・未定義の入力は拒否します。 CLI向けOAuth Device認可は追加予定で、サービス提供前の契約草案です。"
   },
   "servers": [
     {
@@ -18,6 +18,9 @@
   "security": [
     {
       "apiKey": []
+    },
+    {
+      "deviceToken": []
     }
   ],
   "paths": {
@@ -88,6 +91,16 @@
           },
           "504": {
             "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "description": "OAuthアクセストークンが無効または期限切れ。WWW-Authenticate: Bearer error=\"invalid_token\"。APIキー認証の無効なキーは従来どおり404。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -111,7 +124,8 @@
             "description": "前の検索応答のnext_cursor。1ページ最大50件。"
           }
         ],
-        "description": "qで商品名を部分一致検索します。条件なしの商品一覧は提供しません。"
+        "description": "qで商品名を部分一致検索します。条件なしの商品一覧は提供しません。",
+        "x-required-scope": "products:read"
       }
     },
     "/v1/products/{jan}": {
@@ -170,6 +184,16 @@
           },
           "504": {
             "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "description": "OAuthアクセストークンが無効または期限切れ。WWW-Authenticate: Bearer error=\"invalid_token\"。APIキー認証の無効なキーは従来どおり404。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -183,7 +207,8 @@
               "description": "チェックディジットが正しいJAN。先頭ゼロを保持する。"
             }
           }
-        ]
+        ],
+        "x-required-scope": "products:read"
       }
     },
     "/v1/quotes": {
@@ -242,6 +267,16 @@
           },
           "504": {
             "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "description": "OAuthアクセストークンが無効または期限切れ。WWW-Authenticate: Bearer error=\"invalid_token\"。APIキー認証の無効なキーは従来どおり404。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -267,7 +302,8 @@
               }
             }
           }
-        }
+        },
+        "x-required-scope": "quotes:write"
       }
     },
     "/v1/quotes/{id}": {
@@ -326,6 +362,16 @@
           },
           "504": {
             "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "description": "OAuthアクセストークンが無効または期限切れ。WWW-Authenticate: Bearer error=\"invalid_token\"。APIキー認証の無効なキーは従来どおり404。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -338,7 +384,8 @@
               "format": "uuid"
             }
           }
-        ]
+        ],
+        "x-required-scope": "quotes:write"
       }
     },
     "/v1/orders": {
@@ -397,6 +444,16 @@
           },
           "504": {
             "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "description": "OAuthアクセストークンが無効または期限切れ。WWW-Authenticate: Bearer error=\"invalid_token\"。APIキー認証の無効なキーは従来どおり404。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -422,7 +479,8 @@
               }
             }
           }
-        }
+        },
+        "x-required-scope": "orders:write"
       },
       "get": {
         "operationId": "list_orders",
@@ -490,6 +548,16 @@
           },
           "504": {
             "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "description": "OAuthアクセストークンが無効または期限切れ。WWW-Authenticate: Bearer error=\"invalid_token\"。APIキー認証の無効なキーは従来どおり404。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -502,7 +570,8 @@
             },
             "description": "前の一覧応答のnext_cursor。1ページ最大50件。"
           }
-        ]
+        ],
+        "x-required-scope": "orders:read"
       }
     },
     "/v1/orders/{id}": {
@@ -561,6 +630,16 @@
           },
           "504": {
             "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "description": "OAuthアクセストークンが無効または期限切れ。WWW-Authenticate: Bearer error=\"invalid_token\"。APIキー認証の無効なキーは従来どおり404。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -573,7 +652,8 @@
               "format": "uuid"
             }
           }
-        ]
+        ],
+        "x-required-scope": "orders:read"
       },
       "delete": {
         "operationId": "cancel_order",
@@ -630,6 +710,16 @@
           },
           "504": {
             "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "description": "OAuthアクセストークンが無効または期限切れ。WWW-Authenticate: Bearer error=\"invalid_token\"。APIキー認証の無効なキーは従来どおり404。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -642,7 +732,8 @@
               "format": "uuid"
             }
           }
-        ]
+        ],
+        "x-required-scope": "orders:write"
       }
     },
     "/v1/product-requests": {
@@ -701,6 +792,16 @@
           },
           "504": {
             "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "description": "OAuthアクセストークンが無効または期限切れ。WWW-Authenticate: Bearer error=\"invalid_token\"。APIキー認証の無効なキーは従来どおり404。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -726,7 +827,8 @@
               }
             }
           }
-        }
+        },
+        "x-required-scope": "product_requests:write"
       },
       "get": {
         "operationId": "list_product_requests",
@@ -794,6 +896,16 @@
           },
           "504": {
             "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "description": "OAuthアクセストークンが無効または期限切れ。WWW-Authenticate: Bearer error=\"invalid_token\"。APIキー認証の無効なキーは従来どおり404。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -806,7 +918,8 @@
             },
             "description": "前の一覧応答のnext_cursor。1ページ最大50件。"
           }
-        ]
+        ],
+        "x-required-scope": "product_requests:read"
       }
     },
     "/v1/product-requests/{id}": {
@@ -865,6 +978,16 @@
           },
           "504": {
             "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "description": "OAuthアクセストークンが無効または期限切れ。WWW-Authenticate: Bearer error=\"invalid_token\"。APIキー認証の無効なキーは従来どおり404。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         },
         "parameters": [
@@ -877,7 +1000,245 @@
               "format": "uuid"
             }
           }
-        ]
+        ],
+        "x-required-scope": "product_requests:read"
+      }
+    },
+    "/oauth/public/device_authorization": {
+      "post": {
+        "operationId": "start_device_authorization",
+        "summary": "CLIの端末認可を開始",
+        "description": "公開client_idはkoroai-cli。CLIは本番用だけを扱う。Web承認画面で契約者がAPI利用を有効にしたホーム、端末名、本番の区分、権限を確認する。画面を開くだけでは認可しない。ホームのAPI利用停止・購入上限解除・契約者交代・端末失効は、その端末のAPI利用を止める。",
+        "servers": [
+          {
+            "url": "https://koroai.supply",
+            "description": "OAuth認可サーバーとログイン済みのWeb承認画面。Stagingでは対応するStagingホストを使う。"
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "client_id": {
+                    "type": "string",
+                    "const": "koroai-cli"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "const": "live"
+                  },
+                  "scope": {
+                    "type": "string",
+                    "description": "空白区切りの公開APIスコープ。products:read、quotes:write、orders:read、orders:write、product_requests:read、product_requests:writeから選ぶ。省略時はCLIが必要とする全スコープ。"
+                  },
+                  "device_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 60
+                  }
+                },
+                "required": [
+                  "client_id",
+                  "mode",
+                  "device_name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "端末コードを発行。Cache-Control: no-store。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceAuthorization"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "OAuth 2.0のエラー。Cache-Control: no-store。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "OAuth 2.0のエラー。Cache-Control: no-store。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oauth/public/token": {
+      "post": {
+        "operationId": "exchange_device_token",
+        "summary": "端末コードの交換またはトークンの更新",
+        "description": "application/x-www-form-urlencoded。device_code grantではinterval以上待ち、authorization_pendingなら継続、slow_downなら以後の間隔を5秒以上延ばす。通信失敗でもポーリング間隔を増やす。access tokenは予定1時間、refresh tokenは予定90日。refresh_token grantでは更新トークンを毎回回転し、再利用検知でその端末系列を失効する。",
+        "servers": [
+          {
+            "url": "https://koroai.supply",
+            "description": "OAuth認可サーバーとログイン済みのWeb承認画面。Stagingでは対応するStagingホストを使う。"
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "grant_type": {
+                    "type": "string",
+                    "enum": [
+                      "urn:ietf:params:oauth:grant-type:device_code",
+                      "refresh_token"
+                    ]
+                  },
+                  "client_id": {
+                    "type": "string",
+                    "const": "koroai-cli"
+                  },
+                  "device_code": {
+                    "type": "string",
+                    "description": "device_code grantで必須。"
+                  },
+                  "refresh_token": {
+                    "type": "string",
+                    "description": "refresh_token grantで必須。"
+                  }
+                },
+                "required": [
+                  "grant_type",
+                  "client_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "短命のアクセストークンと回転する更新トークン。Cache-Control: no-store。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceToken"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "OAuth 2.0のエラー。Cache-Control: no-store。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "OAuth 2.0のエラー。Cache-Control: no-store。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "OAuth 2.0のエラー。Cache-Control: no-store。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oauth/public/revoke": {
+      "post": {
+        "operationId": "revoke_device_token",
+        "summary": "CLI端末のトークン系列を失効",
+        "description": "RFC 7009に従い、不明または失効済みのトークンも成功として扱う。",
+        "servers": [
+          {
+            "url": "https://koroai.supply",
+            "description": "OAuth認可サーバーとログイン済みのWeb承認画面。Stagingでは対応するStagingホストを使う。"
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "client_id": {
+                    "type": "string",
+                    "const": "koroai-cli"
+                  },
+                  "token": {
+                    "type": "string",
+                    "description": "現在のrefresh tokenまたはaccess token。"
+                  }
+                },
+                "required": [
+                  "client_id",
+                  "token"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "失効を受理。Cache-Control: no-store。"
+          },
+          "400": {
+            "description": "OAuth 2.0のエラー。Cache-Control: no-store。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "OAuth 2.0のエラー。Cache-Control: no-store。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthError"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -887,6 +1248,11 @@
         "type": "http",
         "scheme": "bearer",
         "description": "ホーム共通の本番用 kr_live_ とテスト用 kr_test_ を各1本、自動で用意する。末尾は43文字のbase64url文字列。ホームの月間購入上限を設定した後、契約者が確認・更新できる。追加・削除・権限やキー固有の購入上限の設定は行わない。更新後の旧値はすぐ無効になる。"
+      },
+      "deviceToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "OAuth Device Authorization Grantで発行する短命のアクセストークン。ホーム・モード・端末に結び付き、更新トークンは認可サーバーだけへ送る。"
       }
     },
     "schemas": {
@@ -1116,7 +1482,119 @@
               "upstream_unavailable",
               "upstream_timeout",
               "request_too_large",
-              "unsupported_media_type"
+              "unsupported_media_type",
+              "invalid_token",
+              "insufficient_scope"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "DeviceAuthorization": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "device_code": {
+            "type": "string",
+            "description": "推測困難な秘密。CLIは表示・記録しない。"
+          },
+          "user_code": {
+            "type": "string",
+            "description": "Webで照合するコード。CLIは表示する。"
+          },
+          "verification_uri": {
+            "type": "string",
+            "format": "uri"
+          },
+          "verification_uri_complete": {
+            "type": "string",
+            "format": "uri"
+          },
+          "expires_in": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "秒。予定値600。"
+          },
+          "interval": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "ポーリングの最小間隔（秒）。予定値5。"
+          }
+        },
+        "required": [
+          "device_code",
+          "user_code",
+          "verification_uri",
+          "verification_uri_complete",
+          "expires_in",
+          "interval"
+        ]
+      },
+      "DeviceToken": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "refresh_token": {
+            "type": "string"
+          },
+          "token_type": {
+            "type": "string",
+            "const": "Bearer"
+          },
+          "expires_in": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "秒。予定値3600（1時間）。"
+          },
+          "refresh_token_expires_in": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "秒。予定値7776000（90日）。"
+          },
+          "scope": {
+            "type": "string"
+          },
+          "home_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "mode": {
+            "type": "string",
+            "const": "live"
+          }
+        },
+        "required": [
+          "access_token",
+          "refresh_token",
+          "token_type",
+          "expires_in",
+          "refresh_token_expires_in",
+          "scope",
+          "home_id",
+          "mode"
+        ]
+      },
+      "OAuthError": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "type": "string",
+            "enum": [
+              "invalid_request",
+              "invalid_client",
+              "invalid_scope",
+              "unsupported_grant_type",
+              "authorization_pending",
+              "slow_down",
+              "access_denied",
+              "expired_token",
+              "invalid_grant"
             ]
           }
         },
