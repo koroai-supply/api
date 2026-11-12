@@ -2,12 +2,12 @@
   "openapi": "3.1.0",
   "info": {
     "title": "頃合商店 Public API",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "license": {
       "name": "MIT",
       "identifier": "MIT"
     },
-    "description": "開発中の草案。まだ利用開始していません。金額は税込の日本円、数量は1パッケージ単位。qとjanの同時指定・重複パラメーター・未定義の入力は拒否します。"
+    "description": "開発中の草案。まだ利用開始していません。金額は税込の日本円、数量は1パッケージ単位。商品検索はqを必須とし、重複パラメーター・未定義の入力は拒否します。"
   },
   "servers": [
     {
@@ -21,10 +21,10 @@
     }
   ],
   "paths": {
-    "/v1/products": {
+    "/v1/products/search": {
       "get": {
-        "operationId": "list_products",
-        "summary": "取扱商品の一覧・検索",
+        "operationId": "search_products",
+        "summary": "取扱商品を名前で検索",
         "responses": {
           "200": {
             "description": "成功",
@@ -98,16 +98,8 @@
               "type": "string",
               "minLength": 1,
               "maxLength": 200
-            }
-          },
-          {
-            "name": "jan",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "pattern": "^([0-9]{8}|[0-9]{13})$",
-              "description": "チェックディジットが正しいJAN。先頭ゼロを保持する。"
-            }
+            },
+            "required": true
           },
           {
             "name": "cursor",
@@ -116,9 +108,10 @@
               "type": "string",
               "format": "uuid"
             },
-            "description": "前の一覧応答のnext_cursor。1ページ最大50件。"
+            "description": "前の検索応答のnext_cursor。1ページ最大50件。"
           }
-        ]
+        ],
+        "description": "qで商品名を部分一致検索します。条件なしの商品一覧は提供しません。"
       }
     },
     "/v1/products/{jan}": {
