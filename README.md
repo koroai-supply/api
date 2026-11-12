@@ -3,14 +3,14 @@
 商品を探し、見積もりを確認し、注文するための公開APIです。
 このリポジトリで仕様書と利用ガイドを管理します。契約の正本は[openapi.yaml](openapi.yaml)です。
 
-**現在は開発中で、まだ提供開始していません。** 仕様はv0.2.0の草案で、以下のURLと実行例は提供開始後の利用を想定しています。
+**現在は開発中で、まだ提供開始していません。** 仕様はv0.3.0の草案で、以下のURLと実行例は提供開始後の利用を想定しています。
 予定の接続先は`https://api.koroai.supply`です。`kr_test_`はテスト注文、`kr_live_`は実注文になります。
 
 ## できること
 
 | 操作 | エンドポイント |
 | --- | --- |
-| 商品の一覧・検索 | `GET /v1/products` |
+| 商品を名前で検索 | `GET /v1/products/search?q=...` |
 | JANで商品を照会 | `GET /v1/products/{jan}` |
 | 見積もりを作成・照会 | `POST /v1/quotes`、`GET /v1/quotes/{id}` |
 | 注文を作成 | `POST /v1/orders` |
@@ -53,7 +53,15 @@ curl 'https://api.koroai.supply/v1/products/4901234567894' \
   -H "Authorization: Bearer $KOROAI_API_KEY"
 ```
 
-商品名で探す場合は`GET /v1/products?q=...`、JANで絞る場合は`GET /v1/products?jan=...`を使います。`q`と`jan`は同時に指定できません。
+商品名で探す場合は検索語を指定します。検索語なしの商品一覧は提供しません。
+
+```sh
+curl --get 'https://api.koroai.supply/v1/products/search' \
+  -H "Authorization: Bearer $KOROAI_API_KEY" \
+  --data-urlencode 'q=お茶'
+```
+
+検索は商品名の部分一致で、1ページ最大50件です。続きがある場合は応答の`next_cursor`を`cursor`に指定します。
 例のJANは説明用で、取扱商品を保証しません。
 
 JANは8桁または13桁の文字列です。先頭ゼロを保持し、チェックディジットも検証します。
