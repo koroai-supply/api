@@ -3,6 +3,10 @@
   "info": {
     "title": "頃合商店 Public API",
     "version": "0.2.0",
+    "license": {
+      "name": "MIT",
+      "identifier": "MIT"
+    },
     "description": "開発中の草案。まだ利用開始していません。金額は税込の日本円、数量は1パッケージ単位。qとjanの同時指定・重複パラメーター・未定義の入力は拒否します。"
   },
   "servers": [
