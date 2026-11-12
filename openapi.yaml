@@ -2,12 +2,12 @@
   "openapi": "3.1.0",
   "info": {
     "title": "頃合商店 Public API",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "license": {
       "name": "MIT",
       "identifier": "MIT"
     },
-    "description": "開発中の草案。まだ利用開始していません。金額は税込の日本円、数量は1パッケージ単位。商品検索はqを必須とし、重複パラメーター・未定義の入力は拒否します。 CLI向けOAuth Device認可は追加予定で、サービス提供前の契約草案です。"
+    "description": "開発中の草案。まだ利用開始していません。金額は税込の日本円、数量は1パッケージ単位。商品検索はqを必須とし、重複パラメーター・未定義の入力は拒否します。 CLI向けOAuth Device認可は追加予定で、サービス提供前の契約草案です。 クイック注文は、ホームに1つ設定された商品を商品の指定なしで1パッケージ注文します。設定・変更・解除はアプリとMCPで行い、このAPIからは変更できません。"
   },
   "servers": [
     {
@@ -734,6 +734,173 @@
           }
         ],
         "x-required-scope": "orders:write"
+      }
+    },
+    "/v1/quick-order": {
+      "get": {
+        "operationId": "get_quick_order",
+        "summary": "ホームのクイック注文の商品を照会",
+        "description": "ホームに1つ設定されたクイック注文の商品を返す。未設定ならproductはnull。設定・変更・解除はアプリとMCPで行い、このAPIからは変更できない。",
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/QuickOrder"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "502": {
+            "$ref": "#/components/responses/Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error"
+          },
+          "504": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "description": "OAuthアクセストークンが無効または期限切れ。WWW-Authenticate: Bearer error=\"invalid_token\"。APIキー認証の無効なキーは従来どおり404。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-required-scope": "orders:read"
+      },
+      "post": {
+        "operationId": "create_quick_order",
+        "summary": "ホームのクイック注文の商品を1パッケージ即時注文",
+        "responses": {
+          "201": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Order"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "502": {
+            "$ref": "#/components/responses/Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error"
+          },
+          "504": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "description": "OAuthアクセストークンが無効または期限切れ。WWW-Authenticate: Bearer error=\"invalid_token\"。APIキー認証の無効なキーは従来どおり404。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9._:-]+$"
+            },
+            "description": "再送時は同じ値を使う。同じ値の異なる内容は409。キーと操作ごとに扱う。"
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuickOrderInput"
+              }
+            }
+          },
+          "description": "本文は省けます。送る場合は空のオブジェクト{}だけで、Content-Typeはapplication/jsonにします。本文がないときはContent-Typeも省けます。"
+        },
+        "x-required-scope": "orders:write",
+        "description": "商品を指定しない短縮の注文。ホームのクイック注文の商品を数量1で注文し、価格・取扱・購入予算・冪等キーは POST /v1/orders と同じに扱う。商品が未設定なら422 quick_order_not_set。"
       }
     },
     "/v1/product-requests": {
@@ -1484,7 +1651,8 @@
               "request_too_large",
               "unsupported_media_type",
               "invalid_token",
-              "insufficient_scope"
+              "insufficient_scope",
+              "quick_order_not_set"
             ]
           }
         },
@@ -1601,6 +1769,32 @@
         "required": [
           "error"
         ]
+      },
+      "QuickOrder": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "product": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Product"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "ホームのクイック注文の商品。未設定ならnull。"
+          }
+        },
+        "required": [
+          "product"
+        ]
+      },
+      "QuickOrderInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "maxProperties": 0,
+        "description": "本文を省くか、空のオブジェクトだけを受け付ける。商品・数量・金額は指定できない。"
       }
     },
     "responses": {

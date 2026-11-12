@@ -3,7 +3,7 @@
 商品を探し、見積もりを確認し、注文するための公開APIです。
 このリポジトリで仕様書と利用ガイドを管理します。契約の正本は[openapi.yaml](openapi.yaml)です。
 
-**現在は開発中で、まだ提供開始していません。** 仕様はv0.4.0の草案で、以下のURLと実行例は提供開始後の利用を想定しています。
+**現在は開発中で、まだ提供開始していません。** 仕様はv0.5.0の草案で、以下のURLと実行例は提供開始後の利用を想定しています。
 予定の接続先は`https://api.koroai.supply`です。`kr_test_`はテスト注文、`kr_live_`は実注文になります。
 
 ## できること
@@ -14,6 +14,7 @@
 | JANで商品を照会 | `GET /v1/products/{jan}` |
 | 見積もりを作成・照会 | `POST /v1/quotes`、`GET /v1/quotes/{id}` |
 | 注文を作成 | `POST /v1/orders` |
+| クイック注文の商品を照会・注文 | `GET /v1/quick-order`、`POST /v1/quick-order` |
 | 注文の一覧・状況確認 | `GET /v1/orders`、`GET /v1/orders/{id}` |
 | 取消可能な注文を取消 | `DELETE /v1/orders/{id}` |
 | 未取扱商品の調査を依頼・確認 | `POST /v1/product-requests`、`GET /v1/product-requests`、`GET /v1/product-requests/{id}` |
@@ -95,6 +96,30 @@ curl 'https://api.koroai.supply/v1/orders' \
 注文前に金額を確認したい場合は、同じJANと数量を`POST /v1/quotes`へ送って見積もりを作成できます。
 未取扱商品は注文できません。`POST /v1/product-requests`へJANを送り、調査・取り扱いを依頼します。調査や運営の承認は購入の承認ではありません。
 
+### クイック注文
+
+ホームに1つ設定したクイック注文の商品を、商品を指定せずに1パッケージ注文できます。ボタンやCLIのように、押す・呼ぶだけで決まった商品を注文したい場合に使います。
+商品の設定・変更・解除はアプリとMCPで行います。APIからは変更できません。
+
+```sh
+curl 'https://api.koroai.supply/v1/quick-order' \
+  -H "Authorization: Bearer $KOROAI_API_KEY"
+```
+
+設定中の商品を`{"data":{"product":{...}}}`で返します。未設定の場合は`product`が`null`です。
+
+```sh
+export ORDER_KEY='kitchen-button-000002'
+
+curl -X POST 'https://api.koroai.supply/v1/quick-order' \
+  -H "Authorization: Bearer $KOROAI_API_KEY" \
+  -H "Idempotency-Key: $ORDER_KEY"
+```
+
+本文は省けます（ボタンなどから送りやすいように）。送る場合は`Content-Type: application/json`で空のオブジェクト`{}`だけを受け付け、商品・数量は指定できません。数量は常に1です。
+正常な作成はHTTP 201で、`POST /v1/orders`と同じ注文を返します。キーの種類、購入予算、冪等キーの扱いも同じです。
+商品が設定されていない場合はHTTP 422の`quick_order_not_set`で、注文しません。
+
 ## 冪等性と再送
 
 `Idempotency-Key`はAPI上は任意ですが、注文するクライアントでは指定してください。
@@ -147,6 +172,7 @@ APIから購入上限を変更することはできません。
 | `invalid_request`、`unsupported_media_type`、`request_too_large` | 入力・Content-Type・本文サイズを確認 |
 | `forbidden`、`purchase_limit_exceeded` | Webで利用条件やホームの購入上限を確認 |
 | `product_not_available` | 商品を確認し、必要なら取り扱いリクエストへ進む |
+| `quick_order_not_set` | アプリかMCPでホームのクイック注文の商品を設定する |
 | `idempotency_conflict` | 保存したキーと元の本文を確認。別のキーで自動的に注文し直さない |
 | `quote_expired`、`order_not_cancelable` | 見積もり・注文の現在の状態を確認 |
 | `rate_limited` | `Retry-After`秒以上待機 |
