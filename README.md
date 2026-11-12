@@ -111,14 +111,12 @@ curl 'https://api.koroai.supply/v1/quick-order' \
 ```sh
 export ORDER_KEY='kitchen-button-000002'
 
-curl 'https://api.koroai.supply/v1/quick-order' \
+curl -X POST 'https://api.koroai.supply/v1/quick-order' \
   -H "Authorization: Bearer $KOROAI_API_KEY" \
-  -H 'Content-Type: application/json' \
-  -H "Idempotency-Key: $ORDER_KEY" \
-  -d '{}'
+  -H "Idempotency-Key: $ORDER_KEY"
 ```
 
-本文は空のオブジェクト`{}`だけを受け付け、商品・数量は指定できません。数量は常に1です。
+本文は省けます（ボタンなどから送りやすいように）。送る場合は`Content-Type: application/json`で空のオブジェクト`{}`だけを受け付け、商品・数量は指定できません。数量は常に1です。
 正常な作成はHTTP 201で、`POST /v1/orders`と同じ注文を返します。キーの種類、購入予算、冪等キーの扱いも同じです。
 商品が設定されていない場合はHTTP 422の`quick_order_not_set`で、注文しません。
 

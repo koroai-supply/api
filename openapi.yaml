@@ -889,14 +889,15 @@
           }
         ],
         "requestBody": {
-          "required": true,
+          "required": false,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/QuickOrderInput"
               }
             }
-          }
+          },
+          "description": "本文は省けます。送る場合は空のオブジェクト{}だけで、Content-Typeはapplication/jsonにします。本文がないときはContent-Typeも省けます。"
         },
         "x-required-scope": "orders:write",
         "description": "商品を指定しない短縮の注文。ホームのクイック注文の商品を数量1で注文し、価格・取扱・購入予算・冪等キーは POST /v1/orders と同じに扱う。商品が未設定なら422 quick_order_not_set。"
@@ -1793,7 +1794,7 @@
         "type": "object",
         "additionalProperties": false,
         "maxProperties": 0,
-        "description": "空のオブジェクトだけを受け付ける。商品・数量・金額は指定できない。"
+        "description": "本文を省くか、空のオブジェクトだけを受け付ける。商品・数量・金額は指定できない。"
       }
     },
     "responses": {
