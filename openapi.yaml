@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "頃合商店 Public API",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "description": "開発中の草案。まだ利用開始していません。金額は税込の日本円、数量は1パッケージ単位。qとjanの同時指定・重複パラメーター・未定義の入力は拒否します。"
   },
   "servers": [
@@ -347,7 +347,7 @@
     "/v1/orders": {
       "post": {
         "operationId": "create_order",
-        "summary": "キーの購入許可と上限内で即時注文",
+        "summary": "ホームの月間購入予算に従って即時注文",
         "responses": {
           "201": {
             "description": "成功",
@@ -889,7 +889,7 @@
       "apiKey": {
         "type": "http",
         "scheme": "bearer",
-        "description": "kr_test_ または kr_live_ に43文字のbase64url文字列を続けたキー。発行時だけ全文を表示する。"
+        "description": "ホーム共通の本番用 kr_live_ とテスト用 kr_test_ を各1本、自動で用意する。末尾は43文字のbase64url文字列。ホームの月間購入上限を設定した後、契約者が確認・更新できる。追加・削除・権限やキー固有の購入上限の設定は行わない。更新後の旧値はすぐ無効になる。"
       }
     },
     "schemas": {
